@@ -1,6 +1,6 @@
 import React from "react";
 
-function Offence({key, x, y}) {
+function Offence({key, id, x, y, removeElementHandler}) {
     const discDiameter = 20;
 
     const styles = {
@@ -16,7 +16,11 @@ function Offence({key, x, y}) {
     };
 
     return (
-        <div key={key} className="disc" style={styles.disc}>
+        <div 
+            className="disc" 
+            style={styles.disc}
+            onClick={() => removeElementHandler(id)}    
+        >
             
         </div>
     )

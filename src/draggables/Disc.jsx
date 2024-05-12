@@ -1,7 +1,8 @@
 import React from "react";
+import { diameterFromType } from "../Constants";
 
-function Disc({key, x, y}) {
-    const discDiameter = 15;
+function Disc({id, x, y, removeElementHandler}) {
+    const discDiameter = diameterFromType[1];
 
     const styles = {
         disc: {
@@ -16,8 +17,11 @@ function Disc({key, x, y}) {
     };
 
     return (
-        <div key={key} className="disc" style={styles.disc}>
-            
+        <div 
+            className="disc" 
+            style={styles.disc} 
+            onClick={() => removeElementHandler(id)}
+        >
         </div>
     )
 }

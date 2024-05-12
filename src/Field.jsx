@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import DraggableItems from "./DraggableItems";
+import { diameterFromType } from "./Constants";
 
 import Disc from "./draggables/Disc";
 import Offence from "./draggables/Offence";
@@ -12,12 +13,24 @@ function Field() {
     const [selectedItem, setSelectedItem] = useState(1); // 1, 2, 3, 4, 5 (correspond to e.g. disc)
     const [fieldItems, setFieldItems] = useState([]); // [1, 2, 3, 4, 5
 
-    function fieldClickedHandler(event) {
-        if(event.button === 0) { // Left click of the mouse
-            const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
-            const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
-            const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
-            console.log(x, y, "Added disc");
+
+    function addFieldElement(event) {
+        const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
+        const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
+        const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
+
+        // Only add the element if it is not a click on an existing element
+        let doAddItem = true;
+        console.log("Checking adding item...");
+        console.log("number of field items = ", fieldItems.length);
+        for (let i = 0; i < fieldItems.length; i++) {
+            const isInElement = Math.pow(fieldItems[i].x - x, 2) + Math.pow(fieldItems[i].y - y, 2) < Math.pow(diameterFromType[fieldItems[i].type], 2);
+            if(isInElement) {
+                doAddItem = false;
+            }
+        }
+        
+        if(doAddItem) {
             setFieldItems([
                 ...fieldItems,
                 {
@@ -30,17 +43,25 @@ function Field() {
         }
     }
 
+    function removeFieldElement(id) {
+        console.log("Removing element");
+        setFieldItems(fieldItems.filter((item) => {
+            return item.id !== id;
+        })); // Remove the item
+    }
+
     return (
         <>
+            
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
-            <div className="field" style={styles.field} onClick={fieldClickedHandler}>
+            <div className="field" style={styles.field} onClick={addFieldElement}>
                 {fieldItems.map((item) => {
                         if (item.type === 1) {
-                            return <Disc key={item.id} x={item.x} y={item.y} />;
+                            return <Disc key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
                         } else if (item.type === 2) {
-                            return <Offence key={item.id} x={item.x} y={item.y} />;
+                            return <Offence key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
                         } else if (item.type === 3) {
-                            return <Defence key={item.id} x={item.x} y={item.y} />;
+                            return <Defence key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
                         } else {
                             return <p key={item.id}>Item not implemented</p>;
                         }
