@@ -1,11 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import DraggableItems from "./DraggableItems";
 import { diameterFromType } from "./Constants";
-
-import Disc from "./draggables/Disc";
-import Offence from "./draggables/Offence";
-import Defence from "./draggables/Defence";
+import Draggable from "./draggables/Draggable";
 
 const fieldLength = 1000; // in pixels
 
@@ -21,8 +19,6 @@ function Field() {
 
         // Only add the element if it is not a click on an existing element
         let doAddItem = true;
-        console.log("Checking adding item...");
-        console.log("number of field items = ", fieldItems.length);
         for (let i = 0; i < fieldItems.length; i++) {
             const isInElement = Math.pow(fieldItems[i].x - x, 2) + Math.pow(fieldItems[i].y - y, 2) < Math.pow(diameterFromType[fieldItems[i].type], 2);
             if(isInElement) {
@@ -44,7 +40,6 @@ function Field() {
     }
 
     function removeFieldElement(id) {
-        console.log("Removing element");
         setFieldItems(fieldItems.filter((item) => {
             return item.id !== id;
         })); // Remove the item
@@ -56,15 +51,16 @@ function Field() {
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
             <div className="field" style={styles.field} onClick={addFieldElement}>
                 {fieldItems.map((item) => {
-                        if (item.type === 1) {
-                            return <Disc key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
-                        } else if (item.type === 2) {
-                            return <Offence key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
-                        } else if (item.type === 3) {
-                            return <Defence key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
-                        } else {
-                            return <p key={item.id}>Item not implemented</p>;
-                        }
+                        return (
+                            <Draggable 
+                                key={uuidv4()} 
+                                id={item.id} 
+                                itemType={item.type} 
+                                x={item.x} 
+                                y={item.y} 
+                                removeElementHandler={removeFieldElement}
+                            />
+                        )
                 })}
                 <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
                 <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>
