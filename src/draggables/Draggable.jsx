@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { diameterFromType, colorFromType } from "../Constants";
+import { diameterFromType, colorFromType, draggableItemsList } from "../Constants";
 
 function Draggable({id, x0, y0, itemType, removeElementHandler, setIsDragging}) {
     const diameter = diameterFromType[itemType];
     const backgroundColor = colorFromType[itemType];
     const [pos, setPos] = useState({x: x0, y: y0});
+    const isOfforDef = (itemType === 2 || itemType === 3);
+    const itemChar = isOfforDef ? draggableItemsList.find((item) => itemType === item.id).name.charAt(0) : "";
 
     function dragHandler(event) {
         // Update the position of the element during dragging
@@ -39,10 +41,10 @@ function Draggable({id, x0, y0, itemType, removeElementHandler, setIsDragging}) 
             }}
             draggable="true"
             onDrag={dragHandler}
-            onDragStart={() => setIsDragging(true)}
+            onDragStart={() => {setIsDragging(true)}}
             onDragEnd={() => setIsDragging(false)}
         >
-            {itemType === 1 ? "" : (itemType === 2 ? "O" : "D")}
+            {itemChar}
         </div>
     )
 }

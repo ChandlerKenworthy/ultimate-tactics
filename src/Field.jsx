@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import DraggableItems from "./DraggableItems";
-import { diameterFromType } from "./Constants";
 import Draggable from "./draggables/Draggable";
 
 const fieldLength = 1000; // in pixels
@@ -33,7 +32,6 @@ function Field() {
     }
 
     function removeFieldElement(id) {
-        console.log("Removing element");
         if(!isDragging) {
             setFieldItems(fieldItems.filter((item) => {
                 return item.id !== id;
@@ -42,8 +40,7 @@ function Field() {
     }
 
     return (
-        <>
-            
+        <>  
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
             <div className="field" style={styles.field} onClick={addFieldElement}>
                 {fieldItems.map((item) => {
