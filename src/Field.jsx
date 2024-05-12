@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import DraggableItems from "./DraggableItems";
 import Draggable from "./draggables/Draggable";
+import { LuUndo, LuRedo } from "react-icons/lu";
+import { RiSave3Line } from "react-icons/ri";
 
 const fieldLength = 1000; // in pixels
 
@@ -10,6 +12,38 @@ function Field() {
     const [selectedItem, setSelectedItem] = useState(1); // 1, 2, 3, 4, 5 (correspond to e.g. disc)
     const [fieldItems, setFieldItems] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
+
+    useEffect(() => {
+        function handleKeyDown(event) {
+          if (event.key === "ArrowRight") {
+            // Left arrow key is pressed
+            setSelectedItem(prevItem => {
+                if(prevItem == 4) {
+                    return 1;
+                } else {
+                    return prevItem + 1;
+                }
+            });
+          } else if(event.key === "ArrowLeft") {
+            // Right arrow key is pressed
+            setSelectedItem(prevItem => {
+                if(prevItem == 1) {
+                    return 4;
+                } else {
+                    return prevItem - 1;
+                }
+            });
+          }
+        }
+    
+        // Add event listener for keydown event
+        window.addEventListener("keydown", handleKeyDown);
+    
+        // Remove event listener on component unmount
+        return () => {
+          window.removeEventListener("keydown", handleKeyDown);
+        };
+      }, []); // Empty dependency array ensures that this effect runs only once
 
     function addFieldElement(event) {
         if(!isDragging) { // Don't add elements when dragging
@@ -42,6 +76,11 @@ function Field() {
     return (
         <>  
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
+            <div style={styles.actionButtonWrapper}>
+                <h2 style={styles.actionButton}><LuUndo /></h2>
+                <h2 style={styles.actionButton}><LuRedo /></h2>
+                <h2 style={styles.actionButton}><RiSave3Line /></h2>
+            </div>
             <div className="field" style={styles.field} onClick={addFieldElement}>
                 {fieldItems.map((item) => {
                         return (
@@ -114,6 +153,18 @@ const styles = {
 
     brickMarkRight: {
         right: (fieldLength * 0.36) - 10,
+    },
+
+    actionButtonWrapper: {
+        display: "flex",
+        alignIems: "center",
+        justifyContent: "center",
+        margin: "auto",
+        marginTop: 15,
+    },
+
+    actionButton: {
+        margin: "0 10px"
     }
 };
 
