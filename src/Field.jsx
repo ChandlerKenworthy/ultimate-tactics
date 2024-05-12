@@ -1,18 +1,55 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import DraggableItems from "./DraggableItems";
+
+import Disc from "./draggables/Disc";
+import Offence from "./draggables/Offence";
+import Defence from "./draggables/Defence";
 
 const fieldLength = 1000; // in pixels
 
 function Field() {
+    const [selectedItem, setSelectedItem] = useState(1); // 1, 2, 3, 4, 5 (correspond to e.g. disc)
+    const [fieldItems, setFieldItems] = useState([]); // [1, 2, 3, 4, 5
+
+    function fieldClickedHandler(event) {
+        if(event.button === 0) { // Left click of the mouse
+            const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
+            const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
+            const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
+            console.log(x, y, "Added disc");
+            setFieldItems([
+                ...fieldItems,
+                {
+                    id: fieldItems.length + 1,
+                    x: x,
+                    y: y,
+                    type: selectedItem
+                }
+            ]);
+        }
+    }
+
     return (
         <>
-        <DraggableItems />
-        <div className="field" style={styles.field}>
-            <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
-            <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>
-            <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkRight}}>x</div>
-            <div className="endzone" style={{...styles.endzone, ...styles.endZoneRight}}></div>
-        </div>
+            <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
+            <div className="field" style={styles.field} onClick={fieldClickedHandler}>
+                {fieldItems.map((item) => {
+                        if (item.type === 1) {
+                            return <Disc key={item.id} x={item.x} y={item.y} />;
+                        } else if (item.type === 2) {
+                            return <Offence key={item.id} x={item.x} y={item.y} />;
+                        } else if (item.type === 3) {
+                            return <Defence key={item.id} x={item.x} y={item.y} />;
+                        } else {
+                            return <p key={item.id}>Item not implemented</p>;
+                        }
+                })}
+                <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
+                <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>
+                <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkRight}}>x</div>
+                <div className="endzone" style={{...styles.endzone, ...styles.endZoneRight}}></div>
+            </div>
         </>
     )
 }
