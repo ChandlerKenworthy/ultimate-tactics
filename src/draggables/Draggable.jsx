@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { diameterFromType, colorFromType, draggableItemsList } from "../Constants";
 
 function Draggable({id, x0, y0, itemType, removeElementHandler, setIsDragging}) {
