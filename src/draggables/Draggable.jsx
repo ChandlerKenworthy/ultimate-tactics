@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { diameterFromType, colorFromType, draggableItemsList } from "../Constants";
+import { ScaleContext } from "../Field";
 
 function Draggable({id, x0, y0, itemType, removeElementHandler, setIsDragging}) {
-    const diameter = diameterFromType[itemType];
+    const { scale, setScale } = useContext(ScaleContext);
+
+    const diameter = diameterFromType[itemType] * scale;
     const backgroundColor = colorFromType[itemType];
     const [pos, setPos] = useState({x: x0, y: y0});
     const isOfforDef = (itemType === 2 || itemType === 3);
