@@ -9,40 +9,36 @@ const fieldLength = 1000; // in pixels
 
 function Field() {
     const [selectedItem, setSelectedItem] = useState(1); // 1, 2, 3, 4, 5 (correspond to e.g. disc)
-    const [fieldItems, setFieldItems] = useState([]); // [1, 2, 3, 4, 5
-
+    const [fieldItems, setFieldItems] = useState([]);
+    const [isDragging, setIsDragging] = useState(false);
 
     function addFieldElement(event) {
-        const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
-        const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
-        const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
-
-        // Only add the element if it is not a click on an existing element
-        let doAddItem = true;
-        for (let i = 0; i < fieldItems.length; i++) {
-            const isInElement = Math.pow(fieldItems[i].x - x, 2) + Math.pow(fieldItems[i].y - y, 2) < Math.pow(diameterFromType[fieldItems[i].type], 2);
-            if(isInElement) {
-                doAddItem = false;
-            }
-        }
-        
-        if(doAddItem) {
+        if(!isDragging) { // Don't add elements when dragging
+            const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
+            const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
+            const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
+    
+            // Only adds an element when not clicking on an existing element (via stopPropagation)
             setFieldItems([
                 ...fieldItems,
                 {
-                    id: fieldItems.length + 1,
-                    x: x,
-                    y: y,
+                    id: uuidv4(),
+                    x0: x,
+                    y0: y,
                     type: selectedItem
                 }
             ]);
+
         }
     }
 
     function removeFieldElement(id) {
-        setFieldItems(fieldItems.filter((item) => {
-            return item.id !== id;
-        })); // Remove the item
+        console.log("Removing element");
+        if(!isDragging) {
+            setFieldItems(fieldItems.filter((item) => {
+                return item.id !== id;
+            })); // Remove the item
+        }
     }
 
     return (
@@ -53,12 +49,13 @@ function Field() {
                 {fieldItems.map((item) => {
                         return (
                             <Draggable 
-                                key={uuidv4()} 
+                                key={item.id} 
                                 id={item.id} 
+                                x0={item.x0}
+                                y0={item.y0}
                                 itemType={item.type} 
-                                x={item.x} 
-                                y={item.y} 
                                 removeElementHandler={removeFieldElement}
+                                setIsDragging={setIsDragging}
                             />
                         )
                 })}
@@ -80,6 +77,7 @@ const styles = {
         marginTop: 15,
         marginLeft: "auto",
         marginRight: "auto",
+        zIndex: 1,
     },
 
     endzone: {
@@ -89,6 +87,7 @@ const styles = {
         borderRight: "1px solid white",
         borderLeft: "1px solid white",
         position: "absolute",
+        zIndex: 2,
     },
 
     endZoneLeft: {
@@ -109,6 +108,7 @@ const styles = {
         width: 20,
         lineHeight: "20px",
         top: (fieldLength * 0.37 * 0.5) - 10,
+        zIndex: 2,
     },
 
     brickMarkLeft: {
