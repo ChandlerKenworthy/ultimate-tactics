@@ -4,6 +4,8 @@ import DraggableItems from "./DraggableItems";
 import Draggable from "./draggables/Draggable";
 import { LuUndo, LuRedo } from "react-icons/lu";
 import { RiSave3Line } from "react-icons/ri";
+import { FaRegTrashCan } from "react-icons/fa6";
+import IconButton from "./IconButton";
 
 const fieldLength = 1000; // in pixels
 
@@ -60,7 +62,6 @@ function Field() {
                     type: selectedItem
                 }
             ]);
-
         }
     }
 
@@ -76,9 +77,10 @@ function Field() {
         <>  
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
             <div style={styles.actionButtonWrapper}>
-                <h2 style={styles.actionButton}><LuUndo /></h2>
-                <h2 style={styles.actionButton}><LuRedo /></h2>
-                <h2 style={styles.actionButton}><RiSave3Line /></h2>
+                <IconButton onClick={() => {}}><LuUndo /></IconButton>
+                <IconButton onClick={() => {}}><LuRedo /></IconButton>
+                <IconButton onClick={() => {}}><RiSave3Line /></IconButton>
+                <IconButton onClick={() => setFieldItems([])}><FaRegTrashCan /></IconButton>
             </div>
             <div className="field" style={styles.field} onClick={addFieldElement}>
                 {fieldItems.map((item) => {
@@ -161,10 +163,6 @@ const styles = {
         margin: "auto",
         marginTop: 15,
     },
-
-    actionButton: {
-        margin: "0 10px"
-    }
 };
 
 export default Field;
