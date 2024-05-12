@@ -1,15 +1,14 @@
-import { useState } from 'react'
 import CustomHeader from './CustomHeader'
 import Field from './Field'
+import Footer from './Footer'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <CustomHeader />
       <Field />
+      <Footer />
     </>
   )
 }
