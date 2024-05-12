@@ -1,15 +1,10 @@
 import React from "react";
+import { draggableItemsList } from "./Constants"
 
 function DraggableItems({selected, setSelectedItem}) {
-    const items = [
-        {id: 1, name: "Disc"},
-        {id: 2, name: "Offence"},
-        {id: 3, name: "Defence"},
-    ]
-
     return (
         <ul style={styles.list}>
-            {items.map((item) => {
+            {draggableItemsList.map((item) => {
                 return (
                     <li key={item.id}>
                         <a style={

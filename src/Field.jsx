@@ -1,70 +1,60 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import DraggableItems from "./DraggableItems";
-import { diameterFromType } from "./Constants";
-
-import Disc from "./draggables/Disc";
-import Offence from "./draggables/Offence";
-import Defence from "./draggables/Defence";
+import Draggable from "./draggables/Draggable";
 
 const fieldLength = 1000; // in pixels
 
 function Field() {
     const [selectedItem, setSelectedItem] = useState(1); // 1, 2, 3, 4, 5 (correspond to e.g. disc)
-    const [fieldItems, setFieldItems] = useState([]); // [1, 2, 3, 4, 5
-
+    const [fieldItems, setFieldItems] = useState([]);
+    const [isDragging, setIsDragging] = useState(false);
 
     function addFieldElement(event) {
-        const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
-        const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
-        const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
-
-        // Only add the element if it is not a click on an existing element
-        let doAddItem = true;
-        console.log("Checking adding item...");
-        console.log("number of field items = ", fieldItems.length);
-        for (let i = 0; i < fieldItems.length; i++) {
-            const isInElement = Math.pow(fieldItems[i].x - x, 2) + Math.pow(fieldItems[i].y - y, 2) < Math.pow(diameterFromType[fieldItems[i].type], 2);
-            if(isInElement) {
-                doAddItem = false;
-            }
-        }
-        
-        if(doAddItem) {
+        if(!isDragging) { // Don't add elements when dragging
+            const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
+            const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
+            const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
+    
+            // Only adds an element when not clicking on an existing element (via stopPropagation)
             setFieldItems([
                 ...fieldItems,
                 {
-                    id: fieldItems.length + 1,
-                    x: x,
-                    y: y,
+                    id: uuidv4(),
+                    x0: x,
+                    y0: y,
                     type: selectedItem
                 }
             ]);
+
         }
     }
 
     function removeFieldElement(id) {
-        console.log("Removing element");
-        setFieldItems(fieldItems.filter((item) => {
-            return item.id !== id;
-        })); // Remove the item
+        if(!isDragging) {
+            setFieldItems(fieldItems.filter((item) => {
+                return item.id !== id;
+            })); // Remove the item
+        }
     }
 
     return (
-        <>
-            
+        <>  
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
             <div className="field" style={styles.field} onClick={addFieldElement}>
                 {fieldItems.map((item) => {
-                        if (item.type === 1) {
-                            return <Disc key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
-                        } else if (item.type === 2) {
-                            return <Offence key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
-                        } else if (item.type === 3) {
-                            return <Defence key={item.id} id={item.id} x={item.x} y={item.y} removeElementHandler={removeFieldElement} />;
-                        } else {
-                            return <p key={item.id}>Item not implemented</p>;
-                        }
+                        return (
+                            <Draggable 
+                                key={item.id} 
+                                id={item.id} 
+                                x0={item.x0}
+                                y0={item.y0}
+                                itemType={item.type} 
+                                removeElementHandler={removeFieldElement}
+                                setIsDragging={setIsDragging}
+                            />
+                        )
                 })}
                 <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
                 <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>
@@ -84,6 +74,7 @@ const styles = {
         marginTop: 15,
         marginLeft: "auto",
         marginRight: "auto",
+        zIndex: 1,
     },
 
     endzone: {
@@ -93,6 +84,7 @@ const styles = {
         borderRight: "1px solid white",
         borderLeft: "1px solid white",
         position: "absolute",
+        zIndex: 2,
     },
 
     endZoneLeft: {
@@ -113,6 +105,7 @@ const styles = {
         width: 20,
         lineHeight: "20px",
         top: (fieldLength * 0.37 * 0.5) - 10,
+        zIndex: 2,
     },
 
     brickMarkLeft: {
