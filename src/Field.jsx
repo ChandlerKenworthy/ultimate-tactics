@@ -6,6 +6,7 @@ import { LuUndo, LuRedo } from "react-icons/lu";
 import { RiSave3Line } from "react-icons/ri";
 import { FaRegTrashCan } from "react-icons/fa6";
 import IconButton from "./IconButton";
+import DashedLine from "./draggables/DashedLine";
 
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
@@ -45,13 +46,14 @@ function Field() {
     const [selectedItem, setSelectedItem] = useState(1); // 1, 2, 3, 4, 5 (correspond to e.g. disc)
     const [fieldItems, setFieldItems] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [lines, setLines] = useState([]);
 
     useEffect(() => {
         function handleKeyDown(event) {
           if (event.key === "ArrowRight") {
             // Left arrow key is pressed
             setSelectedItem(prevItem => {
-                if(prevItem == 4) {
+                if(prevItem == 5) {
                     return 1;
                 } else {
                     return prevItem + 1;
@@ -61,7 +63,7 @@ function Field() {
             // Right arrow key is pressed
             setSelectedItem(prevItem => {
                 if(prevItem == 1) {
-                    return 4;
+                    return 5;
                 } else {
                     return prevItem - 1;
                 }
@@ -78,22 +80,59 @@ function Field() {
         };
       }, []); // Empty dependency array ensures that this effect runs only once
 
+    function addLine(x, y) {
+        // Check if the last line has a complete set of points
+        // if so the user is adding another line and these co-ordinates are the start
+        // otherwise these co-ordinates are the end point of the line
+        if(lines.length === 0) {
+            setLines([{
+                id: uuidv4(),
+                x0: x,
+                y0: y,
+                x1: null,
+                y1: null
+            }]);
+        } else {
+            let lastLine = lines[lines.length - 1];
+            if(lastLine.x1 === null && lastLine.y1 === null) {
+                setLines([...lines.slice(0,-1), {
+                    ...lastLine,
+                    x1: x,
+                    y1: y
+                }]);
+            } else { // Last line in the list has a complete set of points, add a new line
+                setLines([...lines, {
+                    id: uuidv4(),
+                    x0: x,
+                    y0: y,
+                    x1: null,
+                    y1: null
+                }])
+            }
+        }
+    }
+
     function addFieldElement(event) {
         if(!isDragging) { // Don't add elements when dragging
             const fieldRect = event.currentTarget.getBoundingClientRect(); // Get the position and dimensions of the field div
             const x = event.clientX - fieldRect.left; // Get the x position of the click relative to the field div
             const y = event.clientY - fieldRect.top; // Get the y position of the click relative to the field div
-    
-            // Only adds an element when not clicking on an existing element (via stopPropagation)
-            setFieldItems([
-                ...fieldItems,
-                {
-                    id: uuidv4(),
-                    x0: x,
-                    y0: y,
-                    type: selectedItem
-                }
-            ]);
+
+            if(selectedItem === 5) { // Adding a point for the line
+                addLine(x, y);
+            } else {
+                // Only adds an element when not clicking on an existing element (via stopPropagation)
+                setFieldItems([
+                    ...fieldItems,
+                    {
+                        id: uuidv4(),
+                        x0: x,
+                        y0: y,
+                        type: selectedItem
+                    }
+                ]);
+            }
+
         }
     }
 
@@ -105,6 +144,14 @@ function Field() {
         }
     }
 
+    function removeLineElement(id) {
+        if(!isDragging) {
+            setLines(lines.filter((item) => {
+                return item.id !== id;
+            })); // Remove the line
+        }
+    }
+
     return (
         <ScaleContext.Provider value={{ scale: scale, setScale: setScale }}>  
             <DraggableItems selected={selectedItem} setSelectedItem={setSelectedItem} />
@@ -112,7 +159,10 @@ function Field() {
                 <IconButton onClick={() => {}}><LuUndo /></IconButton>
                 <IconButton onClick={() => {}}><LuRedo /></IconButton>
                 <IconButton onClick={() => {}}><RiSave3Line /></IconButton>
-                <IconButton onClick={() => setFieldItems([])}><FaRegTrashCan /></IconButton>
+                <IconButton onClick={() => {
+                    setFieldItems([]);
+                    setLines([]);
+                }}><FaRegTrashCan /></IconButton>
                 <Box sx={{ width: 300 }}>
                 <Slider
                     min={0.1}
@@ -128,18 +178,34 @@ function Field() {
                 </Box>
             </div>
             <div className="field" style={styles.field} onClick={addFieldElement}>
-                {fieldItems.map((item) => {
+                {lines.map((item) => {
+                    if(item.x0 !== null && item.y0 != null && item.x1 !== null && item.y1 !== null) {
                         return (
-                            <Draggable 
-                                key={item.id} 
-                                id={item.id} 
+                            <DashedLine
+                                key={item.id}
+                                id={item.id}
                                 x0={item.x0}
                                 y0={item.y0}
-                                itemType={item.type} 
-                                removeElementHandler={removeFieldElement}
+                                x1={item.x1}
+                                y1={item.y1}
+                                removeElementHandler={removeLineElement}
                                 setIsDragging={setIsDragging}
                             />
                         )
+                    }
+                })}
+                {fieldItems.map((item) => {
+                    return (
+                        <Draggable 
+                            key={item.id} 
+                            id={item.id} 
+                            x0={item.x0}
+                            y0={item.y0}
+                            itemType={item.type} 
+                            removeElementHandler={removeFieldElement}
+                            setIsDragging={setIsDragging}
+                        />
+                    )
                 })}
                 <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
                 <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>

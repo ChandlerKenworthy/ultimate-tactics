@@ -2,7 +2,8 @@ export const draggableItemsList = [
     {id: 1, name: "Disc"},
     {id: 2, name: "Offence"},
     {id: 3, name: "Defence"},
-    {id: 4, name: "Cone"}
+    {id: 4, name: "Cone"},
+    {id: 5, name: "Dashed Line"}
 ]
 
 export const diameterFromType = {
