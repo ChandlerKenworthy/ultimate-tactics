@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <CustomHeader />
-      <Field />
+
       <Footer />
     </>
   )
