@@ -1,13 +1,19 @@
 import { useDroppable } from "@dnd-kit/core";
+import FieldItem from "./FieldItem";
 
 const fieldLength = 1100;
+const FIELD_ID = 'field';
 
-function DroppableField() {
-    const {setNodeRef} = useDroppable({id: 1});
+function DroppableField({fieldItems}) {
+    const {setNodeRef} = useDroppable({id: FIELD_ID});
 
     return (
         <div ref={setNodeRef} style={styles.field}>
-            {/* Render something here */}
+            {fieldItems.map((item) => {
+                return (
+                    <FieldItem key={item.id} type={item.type} pos={item.position} />
+                );
+            })}
             <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
             <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>
             <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkRight}}>x</div>

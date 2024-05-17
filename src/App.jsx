@@ -1,39 +1,44 @@
-import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core'
-import { TextField, Button } from '@mui/material';
+import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import './App.css'
 import { useState } from 'react'
-import Column from './components/Column';
-import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import DragItem from './components/DragItem';
+import { v4 as uuidv4 } from 'uuid';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import MenuBar from './components/MenuBar';
 import DroppableField from './components/DroppableField';
+//import BottomMenu from './components/BottomMenu';
 
 function App() {
-  const [tasks, setTasks] = useState([
-    {id: 1, title: "Finish writing my thesis"},
-    {id: 2, title: "Make my frisbee app"}, 
-    {id: 3, title: "Phone Evie"}
-  ]);
+  const [items, setItems] = useState([]);
+  const [draggedPosition, setDraggedPosition] = useState({x: null, y: null});
 
-  const [input, setInput] = useState("");
+  const handleDragMove = (event) => {
+    const {active, over} = event;
 
-  const addTask = (title) => {
-    setTasks([...tasks, {id: tasks.length + 1, title: title}]);
+    
   };
 
   const handleDragEnd = (event) => {
-    const {active, over} = event;
-    if(active.id === over.id) {
-      return;
+    const { active, over } = event;
+
+    //console.log(active.rect.current.translated);
+    //console.log(over.rect.rect);
+    //const width = active.rect.current.translated.width;
+    
+    const height = active.rect.current.translated.height;
+
+    const posX = active.rect.current.translated.left - over.rect.rect.left;
+    const posY = active.rect.current.translated.top - over.rect.rect.top - (height / 2);
+
+    if(over && over.id === 'field') { // Dropped inside the field
+      setItems((currItems) => [
+        ...currItems,
+        {
+          id: uuidv4(),
+          type: active.id,
+          position: {x: posX, y: posY}
+        },
+      ]);
     }
-
-    const getTaskPos = (id) => tasks.findIndex(task => task.id === id);
-
-    setTasks(curr => {
-      const originalPos = getTaskPos(active.id);
-      const newPos = getTaskPos(over.id);
-      return arrayMove(tasks, originalPos, newPos);
-    });
   };
 
   const sensors = useSensors(
@@ -44,23 +49,17 @@ function App() {
     })
   );
 
-  const addTaskHandler = () => {
-    if(!input) {
-      return;
-    }
-    addTask(input);
-    setInput("");
-  }
-
   return (
     <div>
       <DndContext 
-        collisionDetection={closestCorners}
+        collisionDetection={rectIntersection}
         sensors={sensors}
         onDragEnd={handleDragEnd}
+        onDragMove={handleDragMove}
       >
         <MenuBar />
-        <DroppableField />
+        <DroppableField fieldItems={items} />
+        {/*<BottomMenu />*/}
       </DndContext>
     </div>
   )
