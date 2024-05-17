@@ -5,6 +5,8 @@ import { useState } from 'react'
 import Column from './components/Column';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import DragItem from './components/DragItem';
+import MenuBar from './components/MenuBar';
+import DroppableField from './components/DroppableField';
 
 function App() {
   const [tasks, setTasks] = useState([
@@ -52,26 +54,13 @@ function App() {
 
   return (
     <div>
-      <h1>Task List</h1>
-      <div
-        style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}
-      >
-        <TextField id="outlined-basic" label="Outlined" variant="outlined" value={input} onChange={(event) => setInput(event.target.value)} />
-        <Button variant="contained" onClick={addTaskHandler}>Add Task</Button>
-      </div>
       <DndContext 
         collisionDetection={closestCorners}
         sensors={sensors}
         onDragEnd={handleDragEnd}
       >
-        <Column tasks={tasks} />
-      </DndContext>
-      <hr />
-      <DndContext
-        collisionDetection={closestCorners}
-        sensors={sensors}
-      >
-        <DragItem id={1} />
+        <MenuBar />
+        <DroppableField />
       </DndContext>
     </div>
   )
