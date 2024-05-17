@@ -1,4 +1,3 @@
-
 const typeToName = {
     1: 'Offence',
     2: 'Defence',
