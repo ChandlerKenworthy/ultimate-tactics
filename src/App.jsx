@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import MenuBar from './components/MenuBar';
 import DroppableField from './components/DroppableField';
+import BottomMenu from './components/BottomMenu';
 
 function App() {
   const [items, setItems] = useState([]);
@@ -12,9 +13,9 @@ function App() {
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    const height = active.rect.current.translated.height;
+    //const height = active.rect.current.translated.height;
     const posX = active.rect.current.translated.left - over.rect.rect.left;
-    const posY = active.rect.current.translated.top - over.rect.rect.top - (height / 2);
+    const posY = active.rect.current.translated.top - over.rect.rect.top;
 
     if(over && over.id === 'field') { // Dropped inside the field
       setItems((currItems) => [
@@ -45,6 +46,7 @@ function App() {
       >
         <MenuBar />
         <DroppableField fieldItems={items} />
+        <BottomMenu setItems={setItems} />
       </DndContext>
     </div>
   )
