@@ -26,7 +26,7 @@ function App() {
         link.click();
       })
       .catch((err) => {
-        console.error('Oops, something went wrong!', err);
+        alert('Oops, something went wrong!', err);
       });
   };
 

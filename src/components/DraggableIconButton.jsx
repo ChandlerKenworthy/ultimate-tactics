@@ -1,14 +1,20 @@
 import { Typography } from "@mui/material";
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { blueGrey } from "@mui/material/colors";
+import { blueGrey, red } from "@mui/material/colors";
+import { useState } from "react";
 
 function DraggableIconButton({id, text}) {
+    const [isHovered, setIsHovered] = useState(false);
     const {attributes, listeners, setNodeRef, transform} = useDraggable({id: id});
     const style = { transform: CSS.Translate.toString(transform) };
 
     return (
-        <div style={{position: 'relative'}}>
+        <div 
+            style={{position: 'relative', cursor: isHovered ? 'grab' : 'pointer'}}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <Typography
                 variant="button"
                 component={"h2"}
@@ -23,15 +29,15 @@ function DraggableIconButton({id, text}) {
                 {text}
                 <Typography
                     variant="button"
-                    component={"h2"}
+                    component={"div"}
                     ref={setNodeRef}
                     style={{
-                        ...style, 
+                        ...style,
                         position: 'absolute',
                         top: 0,
                         left: 0,
                         zIndex: 12, 
-                        color: blueGrey[700]
+                        color: blueGrey[700],
                     }}
                     {...listeners}
                     {...attributes}
