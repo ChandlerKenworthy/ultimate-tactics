@@ -1,8 +1,9 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import './App.css'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { toPng } from 'html-to-image';
 import MenuBar from './components/MenuBar';
 import DroppableField from './components/DroppableField';
 import BottomMenu from './components/BottomMenu';
@@ -10,6 +11,24 @@ import BottomMenu from './components/BottomMenu';
 function App() {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
+  const droppableFieldRef = useRef(null);
+
+  const handleExport = () => {
+    if (droppableFieldRef.current === null) {
+      return;
+    }
+  
+    toPng(droppableFieldRef.current, { cacheBust: true })
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = 'user-field-1.png';
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.error('Oops, something went wrong!', err);
+      });
+  };
 
   const updateItemZIndex = (indexChange) => {
     setItems(items.map(item => {
@@ -77,8 +96,15 @@ function App() {
         onDragEnd={handleDragEnd}
       >
         <MenuBar />
-        <DroppableField fieldItems={items} selected={selected} setSelected={setSelected} />
-        <BottomMenu selected={selected} setItems={setItems} updateItemZIndex={updateItemZIndex} />
+        <div ref={droppableFieldRef}>
+          <DroppableField fieldItems={items} selected={selected} setSelected={setSelected} />
+        </div>
+        <BottomMenu 
+          selected={selected} 
+          setItems={setItems} 
+          updateItemZIndex={updateItemZIndex} 
+          handleExport={handleExport}
+        />
       </DndContext>
     </div>
   )

@@ -7,12 +7,12 @@ import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import { grey } from '@mui/material/colors';
 import { Grid } from '@mui/material';
 
-export default function BottomMenu({selected, setItems, updateItemZIndex}) {
+export default function BottomMenu({selected, setItems, updateItemZIndex, handleExport}) {
   return (
     <div style={styles.wrapper}>
       <Grid container spacing={2}>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
-          <button style={styles.btn} onClick={() => console.log("Implement me")}>
+          <button style={styles.btn} onClick={handleExport}>
             <SaveIcon fontSize='medium' />
             <p style={styles.btnText}>Save</p>
           </button>
