@@ -9,6 +9,7 @@ import BottomMenu from './components/BottomMenu';
 
 function App() {
   const [items, setItems] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -61,7 +62,7 @@ function App() {
         onDragEnd={handleDragEnd}
       >
         <MenuBar />
-        <DroppableField fieldItems={items} />
+        <DroppableField fieldItems={items} selected={selected} setSelected={setSelected} />
         <BottomMenu setItems={setItems} />
       </DndContext>
     </div>

@@ -4,18 +4,24 @@ import FieldItem from "./FieldItem";
 const fieldLength = 1100;
 const FIELD_ID = 'field';
 
-function DroppableField({fieldItems}) {
+function DroppableField({fieldItems, selected, setSelected}) {
     const {setNodeRef} = useDroppable({id: FIELD_ID});
 
+    function setSelectedHandler(id) {
+        setSelected(id);
+    }
+
     return (
-        <div ref={setNodeRef} style={styles.field} >
+        <div ref={setNodeRef} style={styles.field} onClick={() => setSelectedHandler(null)}>
             {fieldItems.map((item) => {
                 return (
                     <FieldItem 
                         key={item.id} 
                         id={item.id} 
                         type={item.type} 
-                        pos={item.position} 
+                        pos={item.position}
+                        isSelected={selected === item.id}
+                        setAsSelected={setSelectedHandler}
                     />
                 );
             })}
