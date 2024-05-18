@@ -8,10 +8,15 @@ function DroppableField({fieldItems}) {
     const {setNodeRef} = useDroppable({id: FIELD_ID});
 
     return (
-        <div ref={setNodeRef} style={styles.field}>
+        <div ref={setNodeRef} style={styles.field} >
             {fieldItems.map((item) => {
                 return (
-                    <FieldItem key={item.id} id={item.id} type={item.type} pos={item.position} />
+                    <FieldItem 
+                        key={item.id} 
+                        id={item.id} 
+                        type={item.type} 
+                        pos={item.position} 
+                    />
                 );
             })}
             <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>

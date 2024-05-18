@@ -1,6 +1,6 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import './App.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import MenuBar from './components/MenuBar';

@@ -1,8 +1,11 @@
 import { red, blue, grey } from '@mui/material/colors';
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { useState } from 'react';
 
 function FieldItem({id, type, pos}) {
+    const [isHovered, setIsHovered] = useState(false);
+
     const { attributes, listeners, setNodeRef, transform } = useDraggable({id: id});
     const transformStyle = { transform: CSS.Translate.toString(transform) };
 
@@ -10,7 +13,8 @@ function FieldItem({id, type, pos}) {
         position: 'absolute',
         zIndex: 100,
         left: pos.x,
-        top: pos.y
+        top: pos.y,
+        cursor: isHovered ? 'grab' : 'pointer'
     };
 
     let style = base;
@@ -30,6 +34,8 @@ function FieldItem({id, type, pos}) {
             ref={setNodeRef}
             {...listeners}
             {...attributes}
+            onMouseEnter={() => setIsHovered(true)}  // Set hover state to true
+            onMouseLeave={() => setIsHovered(false)} // Set hover state to false
         >
         </div>
     )
