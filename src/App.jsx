@@ -12,20 +12,36 @@ function App() {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
+    if(!over || over.id !== 'field')
+      return;
 
-    //const height = active.rect.current.translated.height;
     const posX = active.rect.current.translated.left - over.rect.rect.left;
     const posY = active.rect.current.translated.top - over.rect.rect.top;
 
-    if(over && over.id === 'field') { // Dropped inside the field
-      setItems((currItems) => [
-        ...currItems,
-        {
-          id: uuidv4(),
-          type: active.id,
-          position: {x: posX, y: posY}
-        },
-      ]);
+    // If the item being dragged is already on the field (id in items), don't do any of this
+    const isFound = items.find((item) => item.id === active.id);
+    if(isFound) {
+      const modifiedItem = {
+        ...isFound,
+        position: {x: posX, y: posY}
+      };
+
+      setItems(currItems => {
+        return currItems.map((item) =>
+          item.id === active.id ? modifiedItem : item
+        );
+      });
+    } else {
+      if(over && over.id === 'field') { // Dropped inside the field
+        setItems((currItems) => [
+          ...currItems,
+          {
+            id: uuidv4(),
+            type: active.id,
+            position: {x: posX, y: posY}
+          },
+        ]);
+      }
     }
   };
 
