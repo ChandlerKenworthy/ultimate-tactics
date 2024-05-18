@@ -1,6 +1,6 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import './App.css'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import MenuBar from './components/MenuBar';
@@ -10,6 +10,20 @@ import BottomMenu from './components/BottomMenu';
 function App() {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
+
+  const updateItemZIndex = (indexChange) => {
+    setItems(items.map(item => {
+      if(item.id === selected) {
+        console.log(item.zIndex, item.zIndex + indexChange);
+        return {
+          ...item,
+          zIndex: item.zIndex + indexChange
+        };
+      } else {
+        return item;
+      }
+    }));
+  }
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -39,7 +53,8 @@ function App() {
           {
             id: uuidv4(),
             type: active.id,
-            position: {x: posX, y: posY}
+            position: {x: posX, y: posY},
+            zIndex: 100
           },
         ]);
       }
@@ -63,7 +78,7 @@ function App() {
       >
         <MenuBar />
         <DroppableField fieldItems={items} selected={selected} setSelected={setSelected} />
-        <BottomMenu setItems={setItems} />
+        <BottomMenu selected={selected} setItems={setItems} updateItemZIndex={updateItemZIndex} />
       </DndContext>
     </div>
   )

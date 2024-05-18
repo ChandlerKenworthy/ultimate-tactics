@@ -20,6 +20,7 @@ function DroppableField({fieldItems, selected, setSelected}) {
                         id={item.id} 
                         type={item.type} 
                         pos={item.position}
+                        zIndex={item.zIndex}
                         isSelected={selected === item.id}
                         setAsSelected={setSelectedHandler}
                     />

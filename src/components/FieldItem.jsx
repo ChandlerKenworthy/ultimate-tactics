@@ -3,7 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
 
-function FieldItem({id, type, pos, isSelected, setAsSelected}) {
+function FieldItem({id, type, pos, zIndex, isSelected, setAsSelected}) {
     const [isHovered, setIsHovered] = useState(false);
 
     const { attributes, listeners, setNodeRef, transform } = useDraggable({id: id});
@@ -11,7 +11,7 @@ function FieldItem({id, type, pos, isSelected, setAsSelected}) {
 
     const base = {
         position: 'absolute',
-        zIndex: 100,
+        zIndex: zIndex,
         left: pos.x,
         top: pos.y,
         cursor: isHovered ? 'grab' : 'pointer',
