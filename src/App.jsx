@@ -106,6 +106,7 @@ function App() {
           handleExport={handleExport}
         />
       </DndContext>
+      <p>Copyright &copy; (2024) - Chandler Kenworthy</p>
     </div>
   )
 }

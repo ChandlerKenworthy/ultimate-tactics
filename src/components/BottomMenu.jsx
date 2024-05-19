@@ -47,9 +47,6 @@ export default function BottomMenu({selected, setItems, updateItemZIndex, handle
             <p style={{...styles.btnText, color: selected ? 'black' : grey[400]}}>Front</p>
           </button>
         </Grid>
-        <Grid item xs={12} container justifyContent="center" alignItems="center">
-          <p>Copyright &copy; (2024) - Chandler Kenworthy</p>
-        </Grid>
       </Grid>
     </div>
   );
