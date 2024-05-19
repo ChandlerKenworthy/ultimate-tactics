@@ -7,7 +7,7 @@ import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import { grey } from '@mui/material/colors';
 import { Grid } from '@mui/material';
 
-export default function BottomMenu({selected, setItems, updateItemZIndex, handleExport}) {
+export default function BottomMenu({selected, setItems, updateItemZIndex, handleExport, handleUndo}) {
   return (
     <div style={styles.wrapper}>
       <Grid container spacing={2}>
@@ -18,7 +18,7 @@ export default function BottomMenu({selected, setItems, updateItemZIndex, handle
           </button>
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
-          <button style={styles.btn} onClick={() => console.log("Implement me")}>
+          <button style={styles.btn} onClick={handleUndo}>
             <UndoIcon fontSize='medium' />
             <p style={styles.btnText}>Undo</p>
           </button>
@@ -36,13 +36,13 @@ export default function BottomMenu({selected, setItems, updateItemZIndex, handle
           </button>
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
-        <button style={styles.btn} onClick={() => updateItemZIndex(-1)}>
+        <button style={styles.btn} onClick={() => { if(selected) updateItemZIndex(-1) }}>
             <FlipToBackIcon fontSize='medium' style={{color: selected ? 'black' : grey[400]}} />
             <p style={{...styles.btnText, color: selected ? 'black' : grey[400]}}>Back</p>
           </button>
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
-        <button style={styles.btn} onClick={() => updateItemZIndex(1)}>
+        <button style={styles.btn} onClick={() => {if(selected) updateItemZIndex(1) }}>
             <FlipToFrontIcon fontSize='medium' style={{color: selected ? 'black' : grey[400]}} />
             <p style={{...styles.btnText, color: selected ? 'black' : grey[400]}}>Front</p>
           </button>
