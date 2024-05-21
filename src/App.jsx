@@ -25,7 +25,6 @@ function App() {
         return curr.filter(item => item.id !== lastAction.id);
       })
     } else { // Moving an item on the field, put it back to its original position
-      console.log(lastAction);
       setItems(curr => { // TODO: Doesn't work
         return curr.map(item => {
           if(item.id === lastAction.id) { 

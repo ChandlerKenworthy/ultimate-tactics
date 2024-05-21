@@ -1,5 +1,6 @@
 import { useDroppable } from "@dnd-kit/core";
 import FieldItem from "./FieldItem";
+import LineItem from "./LineItem";
 
 const fieldLength = 1100;
 const FIELD_ID = 'field';
@@ -14,17 +15,31 @@ function DroppableField({fieldItems, selected, setSelected}) {
     return (
         <div ref={setNodeRef} style={styles.field} onClick={() => setSelectedHandler(null)}>
             {fieldItems.map((item) => {
-                return (
-                    <FieldItem 
-                        key={item.id} 
-                        id={item.id} 
-                        type={item.type} 
-                        pos={item.position}
-                        zIndex={item.zIndex}
-                        isSelected={selected === item.id}
-                        setAsSelected={setSelectedHandler}
-                    />
-                );
+                if(item.type === 4 || item.type === 5) { // Line/arrow
+                    return (
+                        <LineItem 
+                            key={item.id} 
+                            id={item.id} 
+                            type={item.type} 
+                            pos={item.position}
+                            zIndex={item.zIndex}
+                            isSelected={selected === item.id}
+                            setAsSelected={setSelectedHandler}
+                        />
+                    );
+                } else {
+                    return (
+                        <FieldItem 
+                            key={item.id} 
+                            id={item.id} 
+                            type={item.type} 
+                            pos={item.position}
+                            zIndex={item.zIndex}
+                            isSelected={selected === item.id}
+                            setAsSelected={setSelectedHandler}
+                        />
+                    );
+                }
             })}
             <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
             <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>
