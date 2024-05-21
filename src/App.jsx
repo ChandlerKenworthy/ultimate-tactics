@@ -25,11 +25,16 @@ function App() {
         return curr.filter(item => item.id !== lastAction.id);
       })
     } else { // Moving an item on the field, put it back to its original position
+      console.log(lastAction);
       setItems(curr => { // TODO: Doesn't work
         return curr.map(item => {
-          return {
-            ...item,
-            position: {x: lastAction.startX, y: lastAction.endX},
+          if(item.id === lastAction.id) { 
+            return {
+              ...item,
+              position: {x: lastAction.startX, y: lastAction.endX},
+            }
+          } else {
+            return item;
           }
         });
       })
@@ -155,6 +160,7 @@ function App() {
           updateItemZIndex={updateItemZIndex} 
           handleExport={handleExport}
           handleUndo={handleUndo}
+          historyLength={history.length}
         />
       </DndContext>
       <p>Copyright &copy; (2024) - Chandler Kenworthy</p>

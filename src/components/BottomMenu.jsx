@@ -7,7 +7,7 @@ import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import { grey } from '@mui/material/colors';
 import { Grid } from '@mui/material';
 
-export default function BottomMenu({selected, setItems, updateItemZIndex, handleExport, handleUndo}) {
+export default function BottomMenu({selected, setItems, updateItemZIndex, handleExport, handleUndo, historyLength}) {
   return (
     <div style={styles.wrapper}>
       <Grid container spacing={2}>
@@ -19,14 +19,14 @@ export default function BottomMenu({selected, setItems, updateItemZIndex, handle
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
           <button style={styles.btn} onClick={handleUndo}>
-            <UndoIcon fontSize='medium' />
-            <p style={styles.btnText}>Undo</p>
+            <UndoIcon fontSize='medium' style={{color: historyLength ? 'black' : grey[400]}} />
+            <p style={{...styles.btnText, color: historyLength ? 'black' : grey[400]}}>Undo</p>
           </button>
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
           <button style={styles.btn} onClick={() => console.log("implement me")}>
-            <RedoIcon fontSize='medium' />
-            <p style={styles.btnText}>Redo</p>
+            <RedoIcon fontSize='medium' style={{color: historyLength ? 'black' : grey[400]}} />
+            <p style={{...styles.btnText, color: historyLength ? 'black' : grey[400]}}>Redo</p>    
           </button>
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
