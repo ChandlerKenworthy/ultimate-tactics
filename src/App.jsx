@@ -11,36 +11,10 @@ import BottomMenu from './components/BottomMenu';
 function App() {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [history, setHistory] = useState([]); // For undo/redo actions track all the users actions
-
   const droppableFieldRef = useRef(null);
 
   const handleUndo = () => {
-    const histLength = history.length;
-    if(histLength < 1) return; // Nothing left to undo
-
-    const lastAction = history[histLength - 1];
-    if(lastAction.wasAdding) { // last action was to add a new item to the field, remove it
-      setItems(curr => {
-        return curr.filter(item => item.id !== lastAction.id);
-      })
-    } else { // Moving an item on the field, put it back to its original position
-      setItems(curr => { // TODO: Doesn't work
-        return curr.map(item => {
-          if(item.id === lastAction.id) { 
-            return {
-              ...item,
-              position: {x: lastAction.startX, y: lastAction.endX},
-            }
-          } else {
-            return item;
-          }
-        });
-      })
-    }
-
-    // TODO: Pop the last item from the history....no that way we can't redo...need an index to track
-    setHistory(history.slice(0, -1));
+    console.log("implement undo")
   }
 
   const handleExport = () => {
@@ -90,17 +64,6 @@ function App() {
         position: {x: posX, y: posY}
       };
 
-      setHistory(currHistory => {
-        return [...currHistory, {
-          startX: isFound.position.x,
-          endX: posX,
-          startY: isFound.position.y,
-          endY: posY,
-          wasAdding: false,
-          id: modifiedItem.id,
-        }];
-      }); // Moved an item from somewhere to somewhere else
-
       setItems(currItems => {
         return currItems.map((item) =>
           item.id === active.id ? modifiedItem : item
@@ -109,17 +72,6 @@ function App() {
     } else {
       if(over && over.id === 'field') { // Dropped inside the field
         const thisId = uuidv4();
-
-        setHistory(currHistory => {
-          return [...currHistory, {
-            startX: posX,
-            endX: posX,
-            startY: posY,
-            endY: posY,
-            wasAdding: true,
-            id: thisId,
-          }];
-        }); // Moved an item from somewhere to somewhere else
 
         setItems((currItems) => [
           ...currItems,
