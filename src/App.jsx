@@ -10,6 +10,7 @@ import BottomMenu from './components/BottomMenu';
 
 function App() {
   const [items, setItems] = useState([]);
+  const [lines, setLines] = useState([]);
   const [selected, setSelected] = useState(null);
   const droppableFieldRef = useRef(null);
 
@@ -37,13 +38,22 @@ function App() {
   const updateItemZIndex = (indexChange) => {
     setItems(items.map(item => {
       if(item.id === selected) {
-        console.log(item.zIndex, item.zIndex + indexChange);
         return {
           ...item,
           zIndex: item.zIndex + indexChange
         };
       } else {
         return item;
+      }
+    }));
+    setLines(lines.map(line => {
+      if(line.id === selected) {
+        return {
+          ...line,
+          zIndex: line.zIndex + indexChange
+        };
+      } else {
+        return line;
       }
     }));
   }
@@ -56,11 +66,15 @@ function App() {
     const posX = active.rect.current.translated.left - over.rect.rect.left;
     const posY = active.rect.current.translated.top - over.rect.rect.top;
 
-    // If the item being dragged is already on the field (id in items), don't do any of this
-    const isFound = items.find((item) => item.id === active.id);
-    if(isFound) {
+    // If the item being dragged is already on the field (id in items/lines), don't do any of this
+    const isItemFound = items.find((item) => item.id === active.id);
+    const isLineFound = lines.find((line) => line.id === active.id);
+    const isLeftHandle = lines.find((line) => line.handleLID === active.id);
+    const isRightHandle = lines.find((line) => line.handleRID === active.id);
+
+    if(isItemFound) {
       const modifiedItem = {
-        ...isFound,
+        ...isItemFound,
         position: {x: posX, y: posY}
       };
 
@@ -69,19 +83,62 @@ function App() {
           item.id === active.id ? modifiedItem : item
         );
       });
+    } else if(isLineFound) {
+      // Do something
+
+      console.log("Drag the line")
+
+
+    } else if(isLeftHandle) {
+      const modifiedLine = {
+        ...isLeftHandle,
+        posHandleL: {x: posX, y: posY}
+      };
+
+      setLines(currLines => {
+        return currLines.map((line) =>
+          line.handleLID === active.id ? modifiedLine : line
+        );
+      });
+    } else if(isRightHandle) {
+      const modifiedLine = {
+        ...isRightHandle,
+        posHandleR: {x: posX, y: posY}
+      };
+
+      setLines(currLines => {
+        return currLines.map((line) =>
+          line.handleRID === active.id ? modifiedLine : line
+        );
+      });
     } else {
       if(over && over.id === 'field') { // Dropped inside the field
         const thisId = uuidv4();
-
-        setItems((currItems) => [
-          ...currItems,
-          {
-            id: thisId,
-            type: active.id,
-            position: {x: posX, y: posY},
-            zIndex: 100
-          },
-        ]);
+        if(active.id === 1 || active.id === 2 || active.id === 3) {
+          setItems((currItems) => [
+            ...currItems,
+            {
+              id: thisId,
+              type: active.id,
+              position: {x: posX, y: posY},
+              zIndex: 100
+            },
+          ]);
+        } else { // Dragged a line onto the pitch
+          // Line is a composite object built of handle and an actual line between them
+          setLines((currLines) => [
+            ...currLines,
+            {
+              id: thisId,
+              type: active.id,
+              posHandleL: {x: posX - 25, y: posY - 25}, // Centre of initial left handle
+              posHandleR: {x: posX + 25, y: posY + 25}, // Centre of initial right handle
+              handleLID: uuidv4(),
+              handleRID: uuidv4(),
+              zIndex: 100,
+            }
+          ]);
+        }
       }
     }
   };
@@ -103,11 +160,17 @@ function App() {
       >
         <MenuBar />
         <div ref={droppableFieldRef}>
-          <DroppableField fieldItems={items} selected={selected} setSelected={setSelected} />
+          <DroppableField 
+            fieldItems={items} 
+            lineItems={lines} 
+            selected={selected} 
+            setSelected={setSelected}
+          />
         </div>
         <BottomMenu 
           selected={selected} 
           setItems={setItems} 
+          setLines={setLines}
           updateItemZIndex={updateItemZIndex} 
           handleExport={handleExport}
           handleUndo={handleUndo}

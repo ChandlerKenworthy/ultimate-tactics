@@ -5,7 +5,7 @@ import LineItem from "./LineItem";
 const fieldLength = 1100;
 const FIELD_ID = 'field';
 
-function DroppableField({fieldItems, selected, setSelected}) {
+function DroppableField({fieldItems, lineItems, selected, setSelected}) {
     const {setNodeRef} = useDroppable({id: FIELD_ID});
 
     function setSelectedHandler(id) {
@@ -15,31 +15,33 @@ function DroppableField({fieldItems, selected, setSelected}) {
     return (
         <div ref={setNodeRef} style={styles.field} onClick={() => setSelectedHandler(null)}>
             {fieldItems.map((item) => {
-                if(item.type === 4 || item.type === 5) { // Line/arrow
-                    return (
-                        <LineItem 
-                            key={item.id} 
-                            id={item.id} 
-                            type={item.type} 
-                            pos={item.position}
-                            zIndex={item.zIndex}
-                            isSelected={selected === item.id}
-                            setAsSelected={setSelectedHandler}
-                        />
-                    );
-                } else {
-                    return (
-                        <FieldItem 
-                            key={item.id} 
-                            id={item.id} 
-                            type={item.type} 
-                            pos={item.position}
-                            zIndex={item.zIndex}
-                            isSelected={selected === item.id}
-                            setAsSelected={setSelectedHandler}
-                        />
-                    );
-                }
+                return (
+                    <FieldItem 
+                        key={item.id} 
+                        id={item.id} 
+                        type={item.type} 
+                        pos={item.position}
+                        zIndex={item.zIndex}
+                        isSelected={selected === item.id}
+                        setAsSelected={setSelectedHandler}
+                    />
+                );
+            })}
+            {lineItems.map((line) => {
+                return (
+                    <LineItem 
+                        key={line.id} 
+                        id={line.id} 
+                        type={line.type} 
+                        posHandleL={line.posHandleL}
+                        posHandleR={line.posHandleR}
+                        handleLID={line.handleLID}
+                        handleRID={line.handleRID}
+                        zIndex={line.zIndex}
+                        isSelected={selected === line.id}
+                        setAsSelected={setSelectedHandler}
+                    />
+                );
             })}
             <div className="endzone" style={{...styles.endzone, ...styles.endZoneLeft}}></div>
             <div className="brickMark" style={{...styles.brickMark, ...styles.brickMarkLeft}}>x</div>

@@ -7,7 +7,7 @@ import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import { grey } from '@mui/material/colors';
 import { Grid } from '@mui/material';
 
-export default function BottomMenu({selected, setItems, updateItemZIndex, handleExport, handleUndo, historyLength}) {
+export default function BottomMenu({selected, setItems, setLines, updateItemZIndex, handleExport, handleUndo, historyLength}) {
   return (
     <div style={styles.wrapper}>
       <Grid container spacing={2}>
@@ -30,7 +30,10 @@ export default function BottomMenu({selected, setItems, updateItemZIndex, handle
           </button>
         </Grid>
         <Grid item xs={2} container justifyContent="center" alignItems="center">
-          <button style={styles.btn} onClick={() => setItems([])}>
+          <button style={styles.btn} onClick={() => {
+            setItems([]);
+            setLines([]);  
+          }}>
             <DeleteIcon fontSize='medium' />
             <p style={styles.btnText}>Clear</p>
           </button>

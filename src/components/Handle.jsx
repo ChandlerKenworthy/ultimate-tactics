@@ -3,7 +3,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from '@dnd-kit/utilities';
 
 // A draggable item that, in pairs describe a line, a handle has a position
-function Handle({ id, pos, innerRef, z }) {
+function Handle({ id, pos, z }) {
     const [isHovered, setIsHovered] = useState(false);
     const { attributes, listeners, setNodeRef, transform } = useDraggable({id: id});
     const transformStyle = { transform: CSS.Translate.toString(transform) };
@@ -12,8 +12,8 @@ function Handle({ id, pos, innerRef, z }) {
         position: 'absolute',
         top: pos.y,
         left: pos.x,
-        width: 20,
-        height: 20,
+        width: 15,
+        height: 15,
         borderRadius: '50%',
         background: 'black',
         cursor: isHovered ? 'grab' : 'pointer',
@@ -22,13 +22,13 @@ function Handle({ id, pos, innerRef, z }) {
     
     return (
             <div
-                        style={{...wrapperStyle, ...transformStyle}}
-                        ref={setNodeRef}
-                        {...listeners}
-                        {...attributes}
-                        onMouseEnter={() => setIsHovered(true)}  // Set hover state to true
-                        onMouseLeave={() => setIsHovered(false)} // Set hover state to false
-                    >
+                style={{...wrapperStyle, ...transformStyle}}
+                ref={setNodeRef}
+                {...listeners}
+                {...attributes}
+                onMouseEnter={() => setIsHovered(true)}  // Set hover state to true
+                onMouseLeave={() => setIsHovered(false)} // Set hover state to false
+            >
 
             </div>
     );
