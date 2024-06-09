@@ -1,10 +1,11 @@
 import { useDroppable } from "@dnd-kit/core";
 import FieldItem from "./FieldItem";
+import LineItem from "./LineItem";
 
 const fieldLength = 1100;
 const FIELD_ID = 'field';
 
-function DroppableField({fieldItems, selected, setSelected}) {
+function DroppableField({fieldItems, lineItems, selected, setSelected}) {
     const {setNodeRef} = useDroppable({id: FIELD_ID});
 
     function setSelectedHandler(id) {
@@ -22,6 +23,21 @@ function DroppableField({fieldItems, selected, setSelected}) {
                         pos={item.position}
                         zIndex={item.zIndex}
                         isSelected={selected === item.id}
+                        setAsSelected={setSelectedHandler}
+                    />
+                );
+            })}
+            {lineItems.map((line) => {
+                return (
+                    <LineItem 
+                        key={line.id} 
+                        id={line.id} 
+                        posHandleL={line.posHandleL}
+                        posHandleR={line.posHandleR}
+                        handleLID={line.handleLID}
+                        handleRID={line.handleRID}
+                        zIndex={line.zIndex}
+                        isSelected={selected === line.id}
                         setAsSelected={setSelectedHandler}
                     />
                 );

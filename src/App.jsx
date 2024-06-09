@@ -10,38 +10,12 @@ import BottomMenu from './components/BottomMenu';
 
 function App() {
   const [items, setItems] = useState([]);
+  const [lines, setLines] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [history, setHistory] = useState([]); // For undo/redo actions track all the users actions
-
   const droppableFieldRef = useRef(null);
 
   const handleUndo = () => {
-    const histLength = history.length;
-    if(histLength < 1) return; // Nothing left to undo
-
-    const lastAction = history[histLength - 1];
-    if(lastAction.wasAdding) { // last action was to add a new item to the field, remove it
-      setItems(curr => {
-        return curr.filter(item => item.id !== lastAction.id);
-      })
-    } else { // Moving an item on the field, put it back to its original position
-      console.log(lastAction);
-      setItems(curr => { // TODO: Doesn't work
-        return curr.map(item => {
-          if(item.id === lastAction.id) { 
-            return {
-              ...item,
-              position: {x: lastAction.startX, y: lastAction.endX},
-            }
-          } else {
-            return item;
-          }
-        });
-      })
-    }
-
-    // TODO: Pop the last item from the history....no that way we can't redo...need an index to track
-    setHistory(history.slice(0, -1));
+    console.log("implement undo")
   }
 
   const handleExport = () => {
@@ -64,13 +38,22 @@ function App() {
   const updateItemZIndex = (indexChange) => {
     setItems(items.map(item => {
       if(item.id === selected) {
-        console.log(item.zIndex, item.zIndex + indexChange);
         return {
           ...item,
           zIndex: item.zIndex + indexChange
         };
       } else {
         return item;
+      }
+    }));
+    setLines(lines.map(line => {
+      if(line.id === selected) {
+        return {
+          ...line,
+          zIndex: line.zIndex + indexChange
+        };
+      } else {
+        return line;
       }
     }));
   }
@@ -83,57 +66,97 @@ function App() {
     const posX = active.rect.current.translated.left - over.rect.rect.left;
     const posY = active.rect.current.translated.top - over.rect.rect.top;
 
-    // If the item being dragged is already on the field (id in items), don't do any of this
-    const isFound = items.find((item) => item.id === active.id);
-    if(isFound) {
+    // If the item being dragged is already on the field (id in items/lines), don't do any of this
+    const isItemFound = items.find((item) => item.id === active.id);
+    const isLineFound = lines.find((line) => line.id === active.id);
+    const isLeftHandle = lines.find((line) => line.handleLID === active.id);
+    const isRightHandle = lines.find((line) => line.handleRID === active.id);
+
+    if(isItemFound) {
       const modifiedItem = {
-        ...isFound,
+        ...isItemFound,
         position: {x: posX, y: posY}
       };
-
-      setHistory(currHistory => {
-        return [...currHistory, {
-          startX: isFound.position.x,
-          endX: posX,
-          startY: isFound.position.y,
-          endY: posY,
-          wasAdding: false,
-          id: modifiedItem.id,
-        }];
-      }); // Moved an item from somewhere to somewhere else
 
       setItems(currItems => {
         return currItems.map((item) =>
           item.id === active.id ? modifiedItem : item
         );
       });
+    } else if(isLineFound) {
+      // Do something
+
+      console.log("Drag the line")
+
+
+    } else if(isLeftHandle) {
+      const modifiedLine = {
+        ...isLeftHandle,
+        posHandleL: {x: posX, y: posY}
+      };
+
+      setLines(currLines => {
+        return currLines.map((line) =>
+          line.handleLID === active.id ? modifiedLine : line
+        );
+      });
+    } else if(isRightHandle) {
+      const modifiedLine = {
+        ...isRightHandle,
+        posHandleR: {x: posX, y: posY}
+      };
+
+      setLines(currLines => {
+        return currLines.map((line) =>
+          line.handleRID === active.id ? modifiedLine : line
+        );
+      });
     } else {
       if(over && over.id === 'field') { // Dropped inside the field
         const thisId = uuidv4();
-
-        setHistory(currHistory => {
-          return [...currHistory, {
-            startX: posX,
-            endX: posX,
-            startY: posY,
-            endY: posY,
-            wasAdding: true,
-            id: thisId,
-          }];
-        }); // Moved an item from somewhere to somewhere else
-
-        setItems((currItems) => [
-          ...currItems,
-          {
-            id: thisId,
-            type: active.id,
-            position: {x: posX, y: posY},
-            zIndex: 100
-          },
-        ]);
+        if(active.id === 1 || active.id === 2 || active.id === 3) {
+          setItems((currItems) => [
+            ...currItems,
+            {
+              id: thisId,
+              type: active.id,
+              position: {x: posX, y: posY},
+              zIndex: 100
+            },
+          ]);
+        } else { // Dragged a line onto the pitch
+          // Line is a composite object built of handle and an actual line between them
+          setLines((currLines) => [
+            ...currLines,
+            {
+              id: thisId,
+              type: active.id,
+              posHandleL: {x: posX - 25, y: posY - 25}, // Centre of initial left handle
+              posHandleR: {x: posX + 25, y: posY + 25}, // Centre of initial right handle
+              handleLID: uuidv4(),
+              handleRID: uuidv4(),
+              zIndex: 100,
+            }
+          ]);
+        }
       }
     }
   };
+
+  const deleteElementHandler = () => {
+    if(!selected)
+        return;
+    setItems(currItems => currItems.filter(
+      item => {
+        return item.id !== selected
+      }
+    ));
+    setLines(currLines => currLines.filter(
+      line => {
+        return line.id !== selected
+      }
+    ));
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -152,18 +175,25 @@ function App() {
       >
         <MenuBar />
         <div ref={droppableFieldRef}>
-          <DroppableField fieldItems={items} selected={selected} setSelected={setSelected} />
+          <DroppableField 
+            fieldItems={items} 
+            lineItems={lines} 
+            selected={selected} 
+            setSelected={setSelected}
+          />
         </div>
         <BottomMenu 
           selected={selected} 
           setItems={setItems} 
+          setLines={setLines}
           updateItemZIndex={updateItemZIndex} 
           handleExport={handleExport}
           handleUndo={handleUndo}
           historyLength={history.length}
+          deleteElementHandler={deleteElementHandler}
         />
       </DndContext>
-      <p>Copyright &copy; (2024) - Chandler Kenworthy</p>
+      <p>Version 1.0 (Source <a href="https://github.com/ChandlerKenworthy/ultimate-tactics" target="_blank">GitHub</a>) | Copyright &copy; (2024) Chandler Kenworthy</p>
     </div>
   )
 }
