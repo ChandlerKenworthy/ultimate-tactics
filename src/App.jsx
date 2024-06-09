@@ -193,7 +193,7 @@ function App() {
           deleteElementHandler={deleteElementHandler}
         />
       </DndContext>
-      <p>Copyright &copy; (2024) - Chandler Kenworthy</p>
+      <p>Version 1.0 (Source <a href="https://github.com/ChandlerKenworthy/ultimate-tactics" target="_blank">GitHub</a>) | Copyright &copy; (2024) Chandler Kenworthy</p>
     </div>
   )
 }
