@@ -20,11 +20,15 @@ function LineItem({ id, type, posHandleL, posHandleR, handleLID, handleRID, zInd
 
   return (
     <div>
-      <Handle id={handleLID} pos={posHandleL} z={zIndex} />
+      {isSelected && <Handle id={handleLID} pos={posHandleL} z={zIndex} />}
       <svg 
         width={width + 2} 
         height={height + 2} 
         style={{ position: 'absolute', left: minX, top: minY }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setAsSelected(id)
+        }}
       >
         <line 
           x1={posHandleL.x - minX} // TODO: Adjust these so they run through the middle of the handles
@@ -36,7 +40,7 @@ function LineItem({ id, type, posHandleL, posHandleR, handleLID, handleRID, zInd
           strokeDasharray="5,5" // This sets the dashed line pattern
         />
       </svg>
-      <Handle id={handleRID} pos={posHandleR} z={zIndex} />
+      {isSelected && <Handle id={handleRID} pos={posHandleR} z={zIndex} />}
     </div>
   )
 }
