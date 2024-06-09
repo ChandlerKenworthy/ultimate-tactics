@@ -143,6 +143,21 @@ function App() {
     }
   };
 
+  const deleteElementHandler = () => {
+    if(!selected)
+        return;
+    setItems(currItems => currItems.filter(
+      item => {
+        return item.id !== selected
+      }
+    ));
+    setLines(currLines => currLines.filter(
+      line => {
+        return line.id !== selected
+      }
+    ));
+  }
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
@@ -175,6 +190,7 @@ function App() {
           handleExport={handleExport}
           handleUndo={handleUndo}
           historyLength={history.length}
+          deleteElementHandler={deleteElementHandler}
         />
       </DndContext>
       <p>Copyright &copy; (2024) - Chandler Kenworthy</p>

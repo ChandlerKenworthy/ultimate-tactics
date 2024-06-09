@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Handle from './Handle';
 
-function LineItem({ id, type, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected }) {
+function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const dx = posHandleR.x - posHandleL.x;

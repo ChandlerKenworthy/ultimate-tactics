@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import SaveIcon from '@mui/icons-material/Save';
@@ -7,7 +8,7 @@ import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import { grey } from '@mui/material/colors';
 import { Grid } from '@mui/material';
 
-export default function BottomMenu({selected, setItems, setLines, updateItemZIndex, handleExport, handleUndo, historyLength}) {
+export default function BottomMenu({selected, deleteElementHandler, setItems, setLines, updateItemZIndex, handleExport, handleUndo, historyLength}) {
   return (
     <div style={styles.wrapper}>
       <Grid container spacing={2}>
@@ -34,20 +35,35 @@ export default function BottomMenu({selected, setItems, setLines, updateItemZInd
             setItems([]);
             setLines([]);  
           }}>
-            <DeleteIcon fontSize='medium' />
+            <DeleteForeverIcon fontSize='medium' />
             <p style={styles.btnText}>Clear</p>
           </button>
         </Grid>
-        <Grid item xs={2} container justifyContent="center" alignItems="center">
-        <button style={styles.btn} onClick={() => { if(selected) updateItemZIndex(-1) }}>
+
+        <Grid item xs={1} container justifyContent="center" alignItems="center">
+          <div style={{
+            height: '100%',
+            width: '1px',
+            background: grey[400]
+          }}></div>
+        </Grid>
+
+        <Grid item xs={1} container justifyContent="center" alignItems="center">
+          <button style={styles.btn} onClick={() => { if(selected) updateItemZIndex(-1) }}>
             <FlipToBackIcon fontSize='medium' style={{color: selected ? 'black' : grey[400]}} />
             <p style={{...styles.btnText, color: selected ? 'black' : grey[400]}}>Back</p>
           </button>
         </Grid>
-        <Grid item xs={2} container justifyContent="center" alignItems="center">
-        <button style={styles.btn} onClick={() => {if(selected) updateItemZIndex(1) }}>
+        <Grid item xs={1} container justifyContent="center" alignItems="center">
+          <button style={styles.btn} onClick={() => {if(selected) updateItemZIndex(1) }}>
             <FlipToFrontIcon fontSize='medium' style={{color: selected ? 'black' : grey[400]}} />
             <p style={{...styles.btnText, color: selected ? 'black' : grey[400]}}>Front</p>
+          </button>
+        </Grid>
+        <Grid item xs={1} container justifyContent="center" alignItems="center">
+          <button style={styles.btn} onClick={() => {if(selected) deleteElementHandler()}}>
+            <DeleteIcon fontSize='medium' style={{color: selected ? 'black' : grey[400]}} />
+            <p style={{...styles.btnText, color: selected ? 'black' : grey[400]}}>Delete</p>
           </button>
         </Grid>
       </Grid>
@@ -71,7 +87,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    padding: '15px 20px',
+    width: '80px',
+    height: '80px',
     borderRadius: '50%',
     backgroundColor: grey[200]
   },
@@ -79,6 +96,7 @@ const styles = {
   btnText: {
     margin: 0,
     padding: 0,
+    fontSize: 14,
     marginTop: '5px'
   }
 }

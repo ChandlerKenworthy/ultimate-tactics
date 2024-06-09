@@ -32,7 +32,6 @@ function DroppableField({fieldItems, lineItems, selected, setSelected}) {
                     <LineItem 
                         key={line.id} 
                         id={line.id} 
-                        type={line.type} 
                         posHandleL={line.posHandleL}
                         posHandleR={line.posHandleR}
                         handleLID={line.handleLID}
