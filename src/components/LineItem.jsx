@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Handle from './Handle';
 
-function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected }) {
+function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const dx = posHandleR.x - posHandleL.x;
@@ -17,8 +17,7 @@ function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, is
   const lineStyles = {
     width: length,
     height: 0,
-    //background: 'black',
-    border: '1px dashed black',
+    border: `1px dashed ${color}`,
     position: 'absolute',
     transform: `rotate(${angle}deg)`,
     zIndex: zIndex,

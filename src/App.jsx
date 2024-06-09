@@ -4,9 +4,17 @@ import { useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { toPng } from 'html-to-image';
+import { red, blue, grey } from '@mui/material/colors';
 import MenuBar from './components/MenuBar';
 import DroppableField from './components/DroppableField';
 import BottomMenu from './components/BottomMenu';
+
+const defaultColor = {
+  1: red[600],
+  2: blue[500],
+  3: grey[100],
+  4: '#000000',
+};
 
 function App() {
   const [items, setItems] = useState([]);
@@ -121,7 +129,8 @@ function App() {
               id: thisId,
               type: active.id,
               position: {x: posX, y: posY},
-              zIndex: 100
+              zIndex: 100,
+              color: defaultColor[active.id]
             },
           ]);
         } else { // Dragged a line onto the pitch
@@ -136,6 +145,7 @@ function App() {
               handleLID: uuidv4(),
               handleRID: uuidv4(),
               zIndex: 100,
+              color: defaultColor[active.id]
             }
           ]);
         }

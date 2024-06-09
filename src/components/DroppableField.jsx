@@ -22,6 +22,7 @@ function DroppableField({fieldItems, lineItems, selected, setSelected}) {
                         type={item.type} 
                         pos={item.position}
                         zIndex={item.zIndex}
+                        color={item.color}
                         isSelected={selected === item.id}
                         setAsSelected={setSelectedHandler}
                     />
@@ -37,6 +38,7 @@ function DroppableField({fieldItems, lineItems, selected, setSelected}) {
                         handleLID={line.handleLID}
                         handleRID={line.handleRID}
                         zIndex={line.zIndex}
+                        color={line.color}
                         isSelected={selected === line.id}
                         setAsSelected={setSelectedHandler}
                     />
