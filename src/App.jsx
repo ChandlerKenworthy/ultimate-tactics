@@ -149,6 +149,8 @@ function App() {
             }
           ]);
         }
+        // Set the line we just dragged onto the pitch as the active item (to display handles)
+        setSelected(thisId);
       }
     }
   };
