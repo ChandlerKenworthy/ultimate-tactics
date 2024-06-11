@@ -29,7 +29,7 @@ function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIn
 
   return (
     <div>
-      {isSelected && <Handle id={handleLID} pos={posHandleL} z={zIndex} />}
+      {isSelected && <Handle id={handleLID} pos={posHandleL} z={zIndex} color={color} />}
       <div
         style={lineStyles}
         onClick={(e) => {
@@ -41,7 +41,7 @@ function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIn
       >
 
       </div>
-      {isSelected && <Handle id={handleRID} pos={posHandleR} z={zIndex} />}
+      {isSelected && <Handle id={handleRID} pos={posHandleR} z={zIndex} color={color} />}
     </div>
   )
 }

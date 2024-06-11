@@ -31,14 +31,14 @@ function DroppableField({fieldItems, lineItems, selected, setSelected}) {
             {lineItems.map((line) => {
                 return (
                     <LineItem 
-                        key={line.id} 
-                        id={line.id} 
+                        key={line.id}
+                        id={line.id}
+                        color={line.color}
                         posHandleL={line.posHandleL}
                         posHandleR={line.posHandleR}
                         handleLID={line.handleLID}
                         handleRID={line.handleRID}
                         zIndex={line.zIndex}
-                        color={line.color}
                         isSelected={selected === line.id}
                         setAsSelected={setSelectedHandler}
                     />
@@ -58,7 +58,6 @@ const styles = {
         height: fieldLength * 0.37,
         position: "relative",
         background: "#69d17b",
-        marginTop: 30,
         marginLeft: "auto",
         marginRight: "auto",
         zIndex: 1,

@@ -60,9 +60,6 @@ function MenuBar() {
                     <DraggableIconButton id={4} text={"Line"} />
                 </Grid>
                 <Grid item xs={2}>
-                    <DraggableIconButton id={5} text={"Arrow"} />
-                </Grid>
-                <Grid item xs={2}>
                     <Tooltip title={"Account settings"}>
                         <IconButton
                             onClick={handleClick}

@@ -1,6 +1,6 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import './App.css'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { toPng } from 'html-to-image';
@@ -8,6 +8,7 @@ import { red, blue, grey } from '@mui/material/colors';
 import MenuBar from './components/MenuBar';
 import DroppableField from './components/DroppableField';
 import BottomMenu from './components/BottomMenu';
+import ObjectMenu from './components/ObjectMenu';
 
 const defaultColor = {
   1: red[600],
@@ -155,6 +156,41 @@ function App() {
     }
   };
 
+  const updateSelectedHandler = (newItem) => {
+    if(newItem.type < 4) {
+      setItems(currItems => currItems.map(
+        item => {
+          if(item.id === newItem.id) {
+            return newItem;
+          } else {
+            return item;
+          }
+        }
+      ));
+    } else {
+      setLines(currLines => currLines.map(
+        line => {
+          if(line.id === newItem.id) {
+            return newItem;
+          } else {
+            return line;
+          }
+        }
+      ));
+    }
+  };
+
+  const GetSelectedItem = () => {
+    if(!selected)
+      return null;
+
+    const selItem = items.find(item => item.id === selected);
+    if(selItem)
+      return selItem;
+
+    return lines.find(line => line.id === selected);
+  };
+
   const deleteElementHandler = () => {
     if(!selected)
         return;
@@ -168,6 +204,7 @@ function App() {
         return line.id !== selected
       }
     ));
+    setSelected(null);
   }
 
   const sensors = useSensors(
@@ -186,23 +223,36 @@ function App() {
         onDragEnd={handleDragEnd}
       >
         <MenuBar />
-        <div ref={droppableFieldRef}>
+        <div 
+          ref={droppableFieldRef}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 30
+          }}  
+        >
           <DroppableField 
             fieldItems={items} 
             lineItems={lines} 
             selected={selected} 
             setSelected={setSelected}
           />
+          <ObjectMenu 
+            selectedId={selected}
+            selectedItem={GetSelectedItem()}
+            updateSelectedItem={updateSelectedHandler}
+            deleteElementHandler={deleteElementHandler}
+            updateItemZIndex={updateItemZIndex} 
+          />
         </div>
         <BottomMenu 
           selected={selected} 
           setItems={setItems} 
           setLines={setLines}
-          updateItemZIndex={updateItemZIndex} 
           handleExport={handleExport}
           handleUndo={handleUndo}
           historyLength={history.length}
-          deleteElementHandler={deleteElementHandler}
         />
       </DndContext>
       <p>Version 1.0 (Source <a href="https://github.com/ChandlerKenworthy/ultimate-tactics" target="_blank">GitHub</a>) | Copyright &copy; (2024) Chandler Kenworthy</p>
