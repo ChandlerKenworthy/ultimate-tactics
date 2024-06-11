@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Handle from './Handle';
 
-function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected }) {
+function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected, scale, lineType }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const dx = posHandleR.x - posHandleL.x;
@@ -14,11 +14,12 @@ function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, is
   // Calculate angle of rotation in degrees
   const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
+  const lineTypeStr = lineType === 1 ? 'solid' : (lineType === 2 ? 'dashed' : 'dotted');
+
   const lineStyles = {
     width: length,
     height: 0,
-    //background: 'black',
-    border: '1px dashed black',
+    border: `${1 * scale}px ${lineTypeStr} ${color}`,
     position: 'absolute',
     transform: `rotate(${angle}deg)`,
     zIndex: zIndex,
@@ -30,7 +31,7 @@ function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, is
 
   return (
     <div>
-      {isSelected && <Handle id={handleLID} pos={posHandleL} z={zIndex} />}
+      {isSelected && <Handle id={handleLID} pos={posHandleL} z={zIndex} color={color} />}
       <div
         style={lineStyles}
         onClick={(e) => {
@@ -42,7 +43,7 @@ function LineItem({ id, posHandleL, posHandleR, handleLID, handleRID, zIndex, is
       >
 
       </div>
-      {isSelected && <Handle id={handleRID} pos={posHandleR} z={zIndex} />}
+      {isSelected && <Handle id={handleRID} pos={posHandleR} z={zIndex} color={color} />}
     </div>
   )
 }
