@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Handle from './Handle';
 
-function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected }) {
+function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIndex, isSelected, setAsSelected, scale, lineType }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const dx = posHandleR.x - posHandleL.x;
@@ -14,10 +14,12 @@ function LineItem({ id, color, posHandleL, posHandleR, handleLID, handleRID, zIn
   // Calculate angle of rotation in degrees
   const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
+  const lineTypeStr = lineType === 1 ? 'solid' : (lineType === 2 ? 'dashed' : 'dotted');
+
   const lineStyles = {
     width: length,
     height: 0,
-    border: `1px dashed ${color}`,
+    border: `${1 * scale}px ${lineTypeStr} ${color}`,
     position: 'absolute',
     transform: `rotate(${angle}deg)`,
     zIndex: zIndex,

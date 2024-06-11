@@ -1,6 +1,6 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import './App.css'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { toPng } from 'html-to-image';
@@ -131,7 +131,8 @@ function App() {
               type: active.id,
               position: {x: posX, y: posY},
               zIndex: 100,
-              color: defaultColor[active.id]
+              color: defaultColor[active.id],
+              scale: 1.0
             },
           ]);
         } else { // Dragged a line onto the pitch
@@ -146,7 +147,9 @@ function App() {
               handleLID: uuidv4(),
               handleRID: uuidv4(),
               zIndex: 100,
-              color: defaultColor[active.id]
+              color: defaultColor[active.id],
+              scale: 1.0,
+              styleId: 2
             }
           ]);
         }
@@ -224,7 +227,7 @@ function App() {
       >
         <MenuBar />
         <div 
-          ref={droppableFieldRef}
+          
           style={{
             display: 'flex',
             justifyContent: 'center',
@@ -232,12 +235,14 @@ function App() {
             marginTop: 30
           }}  
         >
-          <DroppableField 
-            fieldItems={items} 
-            lineItems={lines} 
-            selected={selected} 
-            setSelected={setSelected}
-          />
+          <div ref={droppableFieldRef}>
+            <DroppableField 
+              fieldItems={items} 
+              lineItems={lines} 
+              selected={selected} 
+              setSelected={setSelected}
+            />
+          </div>
           <ObjectMenu 
             selectedId={selected}
             selectedItem={GetSelectedItem()}

@@ -8,15 +8,21 @@ import { grey } from "@mui/material/colors";
 import FlipToBackIcon from '@mui/icons-material/FlipToBack';
 import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import DeleteIcon from '@mui/icons-material/Delete';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import Slider from '@mui/material/Slider';
 import { HexColorPicker } from "react-colorful";
 
-function ObjectMenu({ selectedId, selectedItem, updateSelectedItem, deleteElementHandler, updateItemZIndex }) {
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
+function ObjectMenu({ selectedId, selectedItem, updateSelectedItem, deleteElementHandler, updateItemZIndex }) {
+    function valueText(value) {
+        return `${value}`;
+    }
 
     return (
         <div style={styles.container}>
-            <h3>Object Editor</h3>
             <div style={styles.row}>
                 <HexColorPicker 
                     color={selectedId ? selectedItem.color : "#000"}
@@ -28,6 +34,46 @@ function ObjectMenu({ selectedId, selectedItem, updateSelectedItem, deleteElemen
                 />
             </div>
             <div style={styles.row}>
+                <div style={styles.sliderWrapper}>
+                    <Slider 
+                        aria-label="Volume" 
+                        value={selectedId ? selectedItem.scale : 1.0} 
+                        onChange={(event, value) => updateSelectedItem({
+                            ...selectedItem,
+                            scale: value
+                        })} 
+                        min={0.2}
+                        max={4.0}
+                        step={0.2}
+                        marks
+                        getAriaValueText={valueText}
+                        valueLabelDisplay="auto"
+                    />
+                </div>
+            </div>
+            {(selectedId && (selectedItem.type >= 4)) && (
+                <div style={styles.row}>
+                    <FormControl sx={{ m: 1, minWidth: 180 }} size="small" disabled={false}>
+                        <InputLabel id="demo-simple-select-autowidth-label">Line</InputLabel>
+                        <Select
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={selectedItem.styleId}
+                        onChange={(event) => updateSelectedItem({
+                            ...selectedItem,
+                            styleId: event.target.value
+                        })}
+                        autoWidth
+                        label="Age"
+                        >
+                        <MenuItem value={1}>Solid</MenuItem>
+                        <MenuItem value={2}>Dashed</MenuItem>
+                        <MenuItem value={3}>Dotted</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+            )}
+            <div style={styles.row}>
                 <button style={styles.btn} onClick={() => { if(selectedId) updateItemZIndex(-1) }}>
                     <FlipToBackIcon fontSize='medium' />
                 </button>
@@ -37,10 +83,6 @@ function ObjectMenu({ selectedId, selectedItem, updateSelectedItem, deleteElemen
                 <button style={styles.btn} onClick={() => {if(selectedId) deleteElementHandler()}}>
                     <DeleteIcon fontSize='medium' />
                 </button>
-            </div>
-            <div style={styles.row}>
-                <p>Size slider</p>
-                <p>Line type picker</p>
             </div>
         </div>
     )
@@ -53,7 +95,10 @@ const styles = {
         height: '400px',
         width: '200px',
         marginLeft: '20px',
-        padding: '0px 10px'
+        padding: '0px 10px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around'
     },
 
     row: {
@@ -69,6 +114,10 @@ const styles = {
 
     picker: {
         width: '200px',
+    },
+
+    sliderWrapper: {
+        width: '180px',
     }
 };
 
